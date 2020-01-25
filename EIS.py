@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class EISGame(object):
@@ -21,7 +22,7 @@ class EISGame(object):
         self.States = [self.p0States, self.p1States]
         self.actions = [0.1 * i for i in range(1, numActions + 1)]
         self.gamma = gamma
-        self.rounds = 0
+        self.rounds = 0  # Rounds updated when each player plays atleast once
         self.roundCounter = 0  # number of players that have played this round
         self.p0Rewards = [0] * 9999  # Preallocate 0 arrays
         self.p1Rewards = [0] * 9999  # Preallocate 0 arrays
@@ -48,18 +49,39 @@ class EISGame(object):
     def calcReward(self, action):
         return pow(self.gamma, self.rounds) * (abs(self.curState) + action)
 
+    def status(self):
+        print("Current game status: ")
+        print("Rounds: " + str(self.rounds))
+        print("Number of players that have played this round: " +str(self.roundCounter))
+        print("Player Turn: " + str(self.curPlayer + 1))
+        print("Rewards so far: ")
+        print("Player 1: " + str(self.rewards[0][0:self.rounds + 1]))
+        print("Player 2: " + str(self.rewards[1][0:self.rounds + 1]))
+        print("Curent State: " + str(self.curState))
+        p1 = np.arange(1, 2, 0.02)
+        p2 = np.arange(-2, -1, 0.02)
+        plt.figure(figsize=(9, 1))
+        plt.grid(True, 'both')
+        plt.axvline(0).set_color("green")
+        plt.axhline(0).set_color("green")
+        plt.plot(p1, p1 - p1, color='red', linewidth=5)
+        plt.plot(p2, p2 - p2, color='blue', linewidth=5)
+        plt.plot(self.curState, 0, 'g^', markersize=12)
+
+    def updateRounds(self):
+        self.roundCounter += 1
+        if (self.roundCounter == 2):
+            # If both players have played then increase total rounds
+            self.roundCounter = 0  # reset the roundcounter
+            self.rounds += 1  # Increase total rounds
+
     def takeAction(self, action, prints=False):
         if action not in self.actions:  # Make sure action is valid
             print("Invalid Action")
             return -1
         # Calculate the reward from the action
         reward = self.calcReward(action)
-        self.roundCounter += 1
         # Increase the number of players that have played this round
-        if (self.roundCounter == 2):
-            # If both players have played then increase total rounds
-            self.roundCounter = 0  # reset the roundcounter
-            self.rounds += 1  # Increase total rounds
         if prints:
             print('Player ' + str(self.curPlayer + 1) +
                   ' Took action ' + str(action))
@@ -68,4 +90,5 @@ class EISGame(object):
         self.rewards[self.curPlayer][self.rounds] = reward
         # update the current state. # also transitions to the next player
         self.curState = self.transition(action, prints)
+        self.updateRounds()
         return 1
