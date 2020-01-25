@@ -26,6 +26,7 @@ class EISGame(object):
         self.p0Rewards = [0] * 9999  # Preallocate 0 arrays
         self.p1Rewards = [0] * 9999  # Preallocate 0 arrays
         self.rewards = [self.p0Rewards, self.p1Rewards]  # Reward array
+        print("The starting state is " + str(self.curState))
 
     def transition(self, action, prints=False):
         act = np.random.normal(loc=action, scale=1)  # Gaussian filter
@@ -62,7 +63,7 @@ class EISGame(object):
         if prints:
             print('Player ' + str(self.curPlayer + 1) +
                   ' Took action ' + str(action))
-        print("The reward was " + reward)
+        print("The reward was " + str(reward))
         # Update current player's rewards
         self.rewards[self.curPlayer][self.rounds] = reward
         # update the current state. # also transitions to the next player
