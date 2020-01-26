@@ -14,7 +14,7 @@ class sparseSampling(object):
         G must have following defined:
                 1) G.transition(a) : Gets next state given action
                 2) G.calcReward(a) : Calculates reward of doing action
-                3) G.actions : list of all avaliable actions
+                3) G.actions : list of all avaliable actions. Assumed fixed
                 4) G.takeAction(a): Takes the action and transitions the state
 
 
@@ -28,26 +28,37 @@ class sparseSampling(object):
         self.G = G
         self.s = G.curState
         self.Qstar = {}
-        self.Vstar = [0] * self.H
 
-    def Q(self, s, a, r):
-        if (s, a) in self.Qstar:
-            self.Qstar[(s, a)].append(r)
-        else:
-            self.Qstar[(s, a)] = [r]
 
     def estimateQ(self, h, s):
-        S_a = {}
-        if h == 0:
-            return 0
-        for a in self.G.actions:
-            for c in range(0, self.C):
-                if (s, a) in S_a:
-                    S_a[(s, a)].append(G.transition(a, s))
+        S_a = {}  # Holds next states
+        q_h = {}  # Holds Q values from current state
+        if h == 0:  # End recursion
+            return [0.0] * len(self.G.actions)
+        # Calculate next states
+        for a in self.G.actions:  # For each action
+            for c in range(0, self.C):  # Generate c children
+                if (s, a) in S_a:  # If (s,a) already visited once
+                    # Then append to the next state list
+                    S_a[(s, a)].append(self.G.transition(a, s))
                 else:
-                    S_a[(s, a)] = [G.transition(a, s)]
-        return S_a
+                    # Otherwise create a list containing the state
+                    S_a[(s, a)] = [self.G.transition(a, s)]
+        for a in self.G.actions:  # For each possible action
+            tot = 0
+            # Go through all possible sampled next states for each action
+            for s_prime in S_a[(s, a)]:  # get the next state
+                # Calculate according to the algorithm
+                tot += self.estimateV(h - 1, s_prime)
+            r = self.G.calcReward(s, a) + (self.gamma / self.C) * tot
+            q_h[(s, a)] = r  # Updated reward for state action pair
 
-                # r = G.calcReward(G.curState, a) + \
-                #     (self.gamma / self.C) * sum(self.estimateV(h - 1,))
-                # self.Q(s, a, r)
+        qStar = [0] * len(self.G.actions)
+        for i, a in enumerate(self.G.actions):
+            qStar[i] = q_h[(s, a)]
+
+        return qStar
+
+    def estimateV(self, h, s):
+        qCur = self.estimateQ(h, s)
+        return max(qCur)
