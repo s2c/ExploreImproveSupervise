@@ -29,11 +29,13 @@ class EISGame(object):
         self.rewards = [self.p0Rewards, self.p1Rewards]  # Reward array
         print("The starting state is " + str(self.curState))
 
-    def transition(self, action, prints=False):
+    def transition(self, action, state=None, prints=False):
+        if state is None:
+            state = self.curState
         act = np.random.normal(loc=action, scale=1)  # Gaussian filter
         if prints:
             print('Resulting action was ' + str(act))
-        nextState = -self.curState + act  # calculate next state
+        nextState = -state + act  # calculate next state
         # Calculate the possible states depending on the player
         # Transition to the next player
         curPlayer = (self.curPlayer + 1) % 2
@@ -46,8 +48,10 @@ class EISGame(object):
             print('Next State is ' + str(nextState))
         return nextState
 
-    def calcReward(self, action):
-        return pow(self.gamma, self.rounds) * (abs(self.curState) - action)
+    def calcReward(self, action, state=None):
+        if state is None:
+            state = self.curState
+        return pow(self.gamma, self.rounds) * (abs(state) - action)
 
     def status(self):
         print("Current game status: ")
