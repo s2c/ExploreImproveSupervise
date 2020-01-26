@@ -47,7 +47,7 @@ class EISGame(object):
         return nextState
 
     def calcReward(self, action):
-        return pow(self.gamma, self.rounds) * (abs(self.curState) + action)
+        return pow(self.gamma, self.rounds) * (abs(self.curState) - action)
 
     def status(self):
         print("Current game status: ")
@@ -89,7 +89,7 @@ class EISGame(object):
         print("The reward was " + str(reward))
         # Update current player's rewards
         self.rewards[self.curPlayer][self.rounds] = reward
-        # update the current state. # also transitions to the next player
+        # update the current state
         self.curState = self.transition(action, prints)
         self.curPlayer = (self.curPlayer + 1) % 2
         self.updateRounds()
