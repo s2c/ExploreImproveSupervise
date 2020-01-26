@@ -51,7 +51,7 @@ class EISGame(object):
     def calcReward(self, action, state=None):
         if state is None:
             state = self.curState
-        return pow(self.gamma, self.rounds) * (abs(state) - action)
+        return abs(state) - action
 
     def status(self):
         print("Current game status: ")
@@ -85,7 +85,7 @@ class EISGame(object):
             print("Invalid Action")
             return -1
         # Calculate the reward from the action
-        reward = self.calcReward(action)
+        reward = pow(self.gamma, self.rounds) * self.calcReward(action)
         # Increase the number of players that have played this round
         if prints:
             print('Player ' + str(self.curPlayer + 1) +
