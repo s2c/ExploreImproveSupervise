@@ -36,8 +36,8 @@ class EISGame(object):
         nextState = -self.curState + act  # calculate next state
         # Calculate the possible states depending on the player
         # Transition to the next player
-        self.curPlayer = (self.curPlayer + 1) % 2
-        curStates = self.States[self.curPlayer]
+        curPlayer = (self.curPlayer + 1) % 2
+        curStates = self.States[curPlayer]
         if nextState < min(curStates):  # Project to min
             nextState = min(curStates)
         if nextState > max(curStates):  # Project to max
@@ -91,5 +91,6 @@ class EISGame(object):
         self.rewards[self.curPlayer][self.rounds] = reward
         # update the current state. # also transitions to the next player
         self.curState = self.transition(action, prints)
+        self.curPlayer = (self.curPlayer + 1) % 2
         self.updateRounds()
         return 1

@@ -9,6 +9,7 @@ class sparseSampling(object):
 
     """
 
-    def __init__(self, simulator=None):
+    def __init__(self, H=None, C=None, epsilon, ):
         super(sparseSampling, self).__init__()
-        self.arg = arg
+        self.H = H
+        self.C = C
