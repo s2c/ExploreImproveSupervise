@@ -52,7 +52,8 @@ class EISGame(object):
     def status(self):
         print("Current game status: ")
         print("Rounds: " + str(self.rounds))
-        print("Number of players that have played this round: " +str(self.roundCounter))
+        print("Number of players that have played this round: " +
+              str(self.roundCounter))
         print("Player Turn: " + str(self.curPlayer + 1))
         print("Rewards so far: ")
         print("Player 1: " + str(self.rewards[0][0:self.rounds + 1]))
