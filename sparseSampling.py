@@ -20,17 +20,17 @@ class sparseSampling(object):
 
     """
 
-    def __init__(self, H, C, gamma, G):
+    def __init__(self, H, C, gamma, G, RmaX):
         super(sparseSampling, self).__init__()
         self.H = H
         self.C = C
+        self.Rmax = Rmax
         self.gamma = gamma
         self.G = G
         self.s = G.curState
         self.Qstar = {}
 
-
-    def estimateQ(self, h, s):
+    def estimateQ(self, h, s,):
         S_a = {}  # Holds next states
         q_h = {}  # Holds Q values from current state
         if h == 0:  # End recursion

@@ -11,7 +11,7 @@ class EISGame(object):
     Reward = r1(s,a) = |s| - a
     """
 
-    def __init__(self, numActions=5, stateWidth=1, gamma=0.9):
+    def __init__(self, numActions=5, stateWidth=1, gamma=0.9, simultaneous=False):
         super(EISGame, self).__init__()
         # Actual Environment starts here
         # Randomly start in player 1's space
@@ -21,6 +21,7 @@ class EISGame(object):
         self.p1States = [-1 - stateWidth, -1]
         self.States = [self.p0States, self.p1States]
         self.actions = [0.1 * i for i in range(1, numActions + 1)]
+        self.simultaneous = simultaneous
         self.gamma = gamma
         self.rounds = 0  # Rounds updated when each player plays atleast once
         self.roundCounter = 0  # number of players that have played this round
@@ -74,11 +75,14 @@ class EISGame(object):
         plt.plot(self.curState, 0, 'g^', markersize=12)
 
     def updateRounds(self):
-        self.roundCounter += 1
-        if (self.roundCounter == 2):
-            # If both players have played then increase total rounds
-            self.roundCounter = 0  # reset the roundcounter
-            self.rounds += 1  # Increase total rounds
+        if self.simultaneous:
+            self.roundCounter += 1
+            if (self.roundCounter == 2):
+                # If both players have played then increase total rounds
+                self.roundCounter = 0  # reset the roundcounter
+                self.rounds += 1  # Increase total rounds
+        else:
+            self.rounds += 1
 
     def takeAction(self, action, prints=False):
         if action not in self.actions:  # Make sure action is valid
