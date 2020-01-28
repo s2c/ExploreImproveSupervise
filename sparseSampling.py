@@ -20,10 +20,11 @@ class sparseSampling(object):
 
     """
 
-    def __init__(self, H, C, gamma, G, RmaX):
+    def __init__(self, H, C, gamma, G, Rmax, epsilon):
         super(sparseSampling, self).__init__()
         self.H = H
         self.C = C
+        self.epsilon = epsilon
         self.Rmax = Rmax
         self.gamma = gamma
         self.G = G
