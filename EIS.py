@@ -17,8 +17,9 @@ class EISGame(object):
         # Randomly start in player 1's space
         self.curState = np.random.uniform(1, 2)
         self.curPlayer = 0  # Player 0 always starts first, 0 Indexed
-        self.p0States = [1, 1 + stateWidth]
-        self.p1States = [-1 - stateWidth, -1]
+        t = 0.0000000000001
+        self.p0States = [t, 0 + stateWidth]
+        self.p1States = [0 - stateWidth, -t]
         self.States = [self.p0States, self.p1States]
         self.actions = [0.1 * i for i in range(1, numActions + 1)]
         self.simultaneous = simultaneous
