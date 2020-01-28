@@ -89,16 +89,16 @@ class EISGame(object):
             print("Invalid Action")
             return -1
         # Calculate the reward from the action
-        reward = pow(self.gamma, self.rounds) * self.calcReward(action)
+        reward = pow(self.gamma, self.rounds) * self.calcReward(action,state=self.curState)
         # Increase the number of players that have played this round
         if prints:
             print('Player ' + str(self.curPlayer + 1) +
                   ' Took action ' + str(action))
         print("The reward was " + str(reward))
         # Update current player's rewards
-        self.rewards[self.curPlayer][self.rounds] = reward
+        self.rewards[0][self.rounds] = reward * np.sign(self.curState)
         # update the current state
-        self.curState = self.transition(action, prints)
+        self.curState = self.transition(action,state=self.curState, prints=prints)
         self.curPlayer = (self.curPlayer + 1) % 2
         self.updateRounds()
         return 1
