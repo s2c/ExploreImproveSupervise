@@ -20,16 +20,32 @@ class sparseSampling(object):
 
     """
 
-    def __init__(self, H, C, gamma, G, Rmax, epsilon):
+    def __init__(self, gamma, G, Rmax, epsilon, H=None, C=None):
         super(sparseSampling, self).__init__()
-        self.H = H
-        self.C = C
         self.epsilon = epsilon
         self.Rmax = Rmax
         self.gamma = gamma
         self.G = G
         self.s = G.curState
         self.Qstar = {}
+        self.ldba = (epsilon * ((1 - gamma)**2)) / 4
+        self.Vmax = Rmax / (1 - gamma)
+        if H is not None:
+            self.H = H
+        else:
+            self.H = np.log(self.ldba / self.Vmax)
+            self.H = np.ceil(self.H / np.log(self.gamma))
+            self.H = int(self.H)
+        if C is not None:
+            self.C = C
+        else:
+            one = (self.Vmax / self.ldba)**2
+            numActions = len(self.G.actions)
+            two = (2 * self.H) * np.log((numActions *
+                                         self.H * (self.Vmax**2)) / self.ldba**2)
+            three = np.log(Rmax / self.ldba)
+            self.C = np.ceil(one * (two + three))
+            self.C = int(self.C)
 
     def estimateQ(self, h, s,):
         S_a = {}  # Holds next states
@@ -62,4 +78,5 @@ class sparseSampling(object):
 
     def estimateV(self, h, s):
         qCur = self.estimateQ(h, s)
-        return max(qCur)
+        # positive state = p1, negative state = p2
+        return max(np.multiply(qCur,-1))
