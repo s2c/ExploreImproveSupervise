@@ -47,13 +47,14 @@ class sparseSampling(object):
             self.C = np.ceil(one * (two + three))
             self.C = int(self.C)
 
-    def estimateQ(self, h, s, ):
+    def estimateQ(self, h, s, model = None ):
         S_a = {}  # Holds next states
         q_h = {}  # Holds Q values from current state
         if h == 0:  # End recursion
-            if self.model is not None:
-
-            return [0.0] * len(self.G.actions)
+            if model is not None:
+                return model(s)
+            else:
+                return [0.0] * len(self.G.actions)
         # Calculate next states
         for a in self.G.actions:  # For each action
             for c in range(0, self.C):  # Generate c children
@@ -77,9 +78,12 @@ class sparseSampling(object):
         for i, a in enumerate(self.G.actions):
             qStar[i] = q_h[(s, a)]
 
-        return np.sign(s) * max(np.multiply(qStar, np.sign(s)))
 
+        # return np.sign(s) * max(np.multiply(qStar, np.sign(s)))
+        return qStar
     def estimateV(self, h, s):
         qCur = self.estimateQ(h, s)
         # positive state = p1, negative state = p2
         return np.sign(s) * max(np.multiply(qCur, np.sign(s)))
+        # print(type(qCur))
+        # return max(np.multiply(qCur, np.sign(s)))

@@ -9,16 +9,17 @@ class EISGame(object):
     Actions = [0.1,0.2,0.3,0.4,0.5]
     Transition = s' = Project (-s + Guassian(a,sigma^2)), sigma_2 = 1
     Reward = r1(s,a) = |s| - a
+    t: near 0 constant so to avoid 0+,0- errors
     """
 
-    def __init__(self, numActions=5, stateWidth=1, gamma=0.9, simultaneous=False):
+    def __init__(self,t = 0.0000000000001, numActions=5, stateWidth=1, gamma=0.9, simultaneous=False):
         super(EISGame, self).__init__()
         # Actual Environment starts here
-        # Randomly start in player 1's space
-        self.curState = np.random.uniform(1, 2)
         self.curPlayer = 0  # Player 0 always starts first, 0 Indexed
-        t = 0.0000000000001
+        self.t = t 
         self.p0States = [t, 0 + stateWidth]
+       # Randomly start in player 1's space
+        self.curState = np.random.uniform(self.p0States[0], self.p0States[1])
         self.p1States = [0 - stateWidth, -t]
         self.States = [self.p0States, self.p1States]
         self.actions = [0.1 * i for i in range(1, numActions + 1)]
@@ -53,6 +54,8 @@ class EISGame(object):
     def calcReward(self, action, state=None):
         if state is None:
             state = self.curState
+        if state == t or state == -t:  # t is 0
+            return - action
         return abs(state) - action
 
     def status(self):
@@ -90,7 +93,8 @@ class EISGame(object):
             print("Invalid Action")
             return -1
         # Calculate the reward from the action
-        reward = pow(self.gamma, self.rounds) * self.calcReward(action,state=self.curState)
+        reward = pow(self.gamma, self.rounds) * \
+            self.calcReward(action, state=self.curState)
         # Increase the number of players that have played this round
         if prints:
             print('Player ' + str(self.curPlayer + 1) +
@@ -99,7 +103,8 @@ class EISGame(object):
         # Update current player's rewards
         self.rewards[0][self.rounds] = reward * np.sign(self.curState)
         # update the current state
-        self.curState = self.transition(action,state=self.curState, prints=prints)
+        self.curState = self.transition(
+            action, state=self.curState, prints=prints)
         self.curPlayer = (self.curPlayer + 1) % 2
         self.updateRounds()
         return 1
