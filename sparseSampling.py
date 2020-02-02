@@ -66,7 +66,7 @@ class sparseSampling(object):
                     S_a[(s, a)].append(self.G.transition(a, s, curPlayer=turn))
                 else:
                     # Otherwise create a list containing the state
-                    S_a[(s, a)] = [self.G.transition(a, s, curPLayer=turn)]
+                    S_a[(s, a)] = [self.G.transition(a, s, curPlayer=turn)]
         for a in self.G.actions:  # For each possible action
             tot = 0
             # Go through all possible sampled next states for each action
