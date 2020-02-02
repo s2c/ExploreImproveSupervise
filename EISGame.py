@@ -12,11 +12,11 @@ class EISGame(object):
     t: near 0 constant so to avoid 0+,0- errors
     """
 
-    def __init__(self,t = 0, numActions=5, stateWidth=1, gamma=0.9, simultaneous=False):
+    def __init__(self, t=0, numActions=5, stateWidth=1, gamma=0.9, simultaneous=False):
         super(EISGame, self).__init__()
         # Actual Environment starts here
         self.curPlayer = 0  # Player 0 always starts first, 0 Indexed
-        self.t = t 
+        self.t = t
         self.p0States = [t, 0 + stateWidth]
        # Randomly start in player 1's space
         self.curState = np.random.uniform(self.p0States[0], self.p0States[1])
@@ -101,9 +101,9 @@ class EISGame(object):
                   ' Took action ' + str(action))
         print("The reward was " + str(reward))
         # Update current player's rewards
-        if not self.simultaneous: # Player 1 is the only player whose reward matters
+        if not self.simultaneous:  # Player 1 is the only player whose reward matters
             self.rewards[0][self.rounds] = reward
-        else: # simulatenous not implemented
+        else:  # simulatenous not implemented
             raise NotImplementedError
 
         # update the current state

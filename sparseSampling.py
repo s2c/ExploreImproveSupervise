@@ -20,7 +20,7 @@ class sparseSampling(object):
 
     """
 
-    def __init__(self, gamma, G, Rmax, epsilon, H=None, C=None, model = None):
+    def __init__(self, gamma, G, Rmax, epsilon, H=None, C=None, model=None):
         super(sparseSampling, self).__init__()
         self.epsilon = epsilon
         self.Rmax = Rmax
@@ -72,7 +72,7 @@ class sparseSampling(object):
             # Go through all possible sampled next states for each action
             for s_prime in S_a[(s, a)]:  # get the next state
                 # Calculate according to the algorithm
-                tot += self.estimateV(h - 1, s_prime, curTurn+1)
+                tot += self.estimateV(h - 1, s_prime, curTurn + 1)
             r = self.G.calcReward(s, a) + (self.gamma / self.C) * tot
             q_h[(s, a)] = r  # Updated reward for state action pair
 
@@ -91,10 +91,10 @@ class sparseSampling(object):
         # make it clearer
         # print(curTurn)
         # if s > 0:
-        if curTurn % 2==1: # PLayer 1's turn
+        if curTurn % 2 == 1:  # PLayer 1's turn
             return max(qCur)
         else:
-            return min(qCur) #Player 2's turn
+            return min(qCur)  # Player 2's turn
         # elif s==0:
         # print(type(qCur))
         # return max(np.multiply(qCur, np.sign(s)))
