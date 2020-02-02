@@ -14,7 +14,7 @@ class valueIteration(object):
 		self.gap = self.statesActual[1]-self.statesActual[0]
 		self.V = dict.fromkeys(v.statesActual,0) # initialize everything to 0 in the beginning
 		self.C = C
-		self.G = g
+		self.G = G
 		self.gamma = gamma
 
 	def nearestState(self, curState):
