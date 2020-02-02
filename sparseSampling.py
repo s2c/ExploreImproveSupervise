@@ -91,10 +91,10 @@ class sparseSampling(object):
         # make it clearer
         # print(curTurn)
         # if s > 0:
-        if curTurn % 2==1:
+        if curTurn % 2==1: # PLayer 1's turn
             return max(qCur)
         else:
-            return min(qCur)
+            return min(qCur) #Player 2's turn
         # elif s==0:
         # print(type(qCur))
         # return max(np.multiply(qCur, np.sign(s)))
