@@ -63,10 +63,10 @@ class sparseSampling(object):
             for c in range(0, self.C):  # Generate c children
                 if (s, a) in S_a:  # If (s,a) already visited once
                     # Then append to the next state list
-                    S_a[(s, a)].append(self.G.transition(a, s,curPlayer = turn))
+                    S_a[(s, a)].append(self.G.transition(a, s, curPlayer=turn))
                 else:
                     # Otherwise create a list containing the state
-                    S_a[(s, a)] = [self.G.transition(a, s,curPLayer = turn)]
+                    S_a[(s, a)] = [self.G.transition(a, s, curPLayer=turn)]
         for a in self.G.actions:  # For each possible action
             tot = 0
             # Go through all possible sampled next states for each action
