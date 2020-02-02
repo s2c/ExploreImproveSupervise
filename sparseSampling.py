@@ -49,7 +49,7 @@ class sparseSampling(object):
             self.C = np.ceil(one * (two + three))
             self.C = int(self.C)
 
-    def estimateQ(self, h, s, turn=1):  # start with player 0's turn by default
+    def estimateQ(self, h, s, turn=0):  # start with player 0's turn by default
         curTurn = turn
         S_a = {}  # Holds next states
         q_h = {}  # Holds Q values from current state
@@ -73,7 +73,7 @@ class sparseSampling(object):
             for s_prime in S_a[(s, a)]:  # get the next state
                 # Calculate according to the algorithm
                 tot += self.estimateV(h - 1, s_prime, curTurn + 1)
-            r = self.G.calcReward(s, a) + (self.gamma / self.C) * tot
+            r = self.G.calcReward(a, s) + (self.gamma / self.C) * tot
             q_h[(s, a)] = r  # Updated reward for state action pair
 
         qStar = [0] * len(self.G.actions)
@@ -91,10 +91,10 @@ class sparseSampling(object):
         # make it clearer
         # print(curTurn)
         # if s > 0:
-        if curTurn % 2 == 1:  # PLayer 1's turn
+        if curTurn % 2 == 1:  # PLayer 2's turn
             return max(qCur)
         else:
-            return min(qCur)  # Player 2's turn
+            return min(qCur)  # Player 1's turn
         # elif s==0:
         # print(type(qCur))
         # return max(np.multiply(qCur, np.sign(s)))

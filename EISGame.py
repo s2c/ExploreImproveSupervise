@@ -19,7 +19,8 @@ class EISGame(object):
         self.t = t
         self.p0States = [t, 0 + stateWidth]
        # Randomly start in player 1's space
-        self.curState = np.random.uniform(self.p0States[0], self.p0States[1])
+        # self.curState = np.random.uniform(self.p0States[0], self.p0States[1])
+        self.curState = np.random.uniform(0-stateWidth,0+stateWidth)
         self.p1States = [0 - stateWidth, -t]
         self.States = [self.p0States, self.p1States]
         self.actions = [0.1 * i for i in range(1, numActions + 1)]
