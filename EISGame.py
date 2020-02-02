@@ -15,13 +15,18 @@ class EISGame(object):
     def __init__(self, t=0, numActions=5, stateWidth=1, gamma=0.9, simultaneous=False):
         super(EISGame, self).__init__()
         # Actual Environment starts here
-        self.curPlayer = 0  # Player 0 always starts first, 0 Indexed
         self.t = t
-        self.p0States = [t, 0 + stateWidth]
+        self.p0States = [t, t + stateWidth]  # Player 1
        # Randomly start in player 1's space
         # self.curState = np.random.uniform(self.p0States[0], self.p0States[1])
-        self.curState = np.random.uniform(0-stateWidth,0+stateWidth)
-        self.p1States = [0 - stateWidth, -t]
+        self.curState = np.random.uniform(0 - stateWidth, 0 + stateWidth)
+        self.curPlayer = 0  # Player 0 always starts first, 0 Indexed
+        if self.curState <= 0:
+            self.curPlayer = 1
+        else:
+            self.curPlayer = 0
+
+        self.p1States = [t - stateWidth, t]  # PLayer 2
         self.States = [self.p0States, self.p1States]
         self.actions = [0.1 * i for i in range(1, numActions + 1)]
         self.simultaneous = simultaneous
@@ -33,7 +38,7 @@ class EISGame(object):
         self.rewards = [self.p0Rewards, self.p1Rewards]  # Reward array
         print("The starting state is " + str(self.curState))
 
-    def transition(self, action, state=None, prints=False):
+    def transition(self, action, state=None, prints=False, curPlayer=None):
         if state is None:
             state = self.curState
         act = np.random.normal(loc=action, scale=1)  # Gaussian filter
@@ -42,7 +47,10 @@ class EISGame(object):
         nextState = -state + act  # calculate next state
         # Calculate the possible states depending on the player
         # Transition to the next player
-        curPlayer = (self.curPlayer + 1) % 2
+        if curPlayer is None:
+            curPlayer = (self.curPlayer + 1) % 2  # Running the game
+        else:
+            curPlayer = (curPlayer + 1) % 2  # Simulator
         curStates = self.States[curPlayer]
         if nextState < min(curStates):  # Project to min
             nextState = min(curStates)
@@ -69,8 +77,8 @@ class EISGame(object):
         print("Player 1: " + str(self.rewards[0][0:self.rounds + 1]))
         print("Player 2: " + str(self.rewards[1][0:self.rounds + 1]))
         print("Curent State: " + str(self.curState))
-        p1 = np.arange(1, 2, 0.02)
-        p2 = np.arange(-2, -1, 0.02)
+        p1 = np.arange(0, 1, 0.02)
+        p2 = np.arange(-1, 0, 0.02)
         plt.figure(figsize=(9, 1))
         plt.grid(True, 'both')
         plt.axvline(0).set_color("green")
@@ -109,7 +117,7 @@ class EISGame(object):
 
         # update the current state
         self.curState = self.transition(
-            action, state=self.curState, prints=prints)
+            action, state=self.curState, prints=prints, curPlayer=None)
         self.curPlayer = (self.curPlayer + 1) % 2
         self.updateRounds()
         return 1

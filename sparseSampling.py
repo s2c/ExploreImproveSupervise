@@ -49,7 +49,7 @@ class sparseSampling(object):
             self.C = np.ceil(one * (two + three))
             self.C = int(self.C)
 
-    def estimateQ(self, h, s, turn=0):  # start with player 0's turn by default
+    def estimateQ(self, h, s, turn):
         curTurn = turn
         S_a = {}  # Holds next states
         q_h = {}  # Holds Q values from current state
@@ -63,10 +63,10 @@ class sparseSampling(object):
             for c in range(0, self.C):  # Generate c children
                 if (s, a) in S_a:  # If (s,a) already visited once
                     # Then append to the next state list
-                    S_a[(s, a)].append(self.G.transition(a, s))
+                    S_a[(s, a)].append(self.G.transition(a, s,curPlayer = turn))
                 else:
                     # Otherwise create a list containing the state
-                    S_a[(s, a)] = [self.G.transition(a, s)]
+                    S_a[(s, a)] = [self.G.transition(a, s,curPLayer = turn)]
         for a in self.G.actions:  # For each possible action
             tot = 0
             # Go through all possible sampled next states for each action
@@ -87,14 +87,7 @@ class sparseSampling(object):
 
     def estimateV(self, h, s, curTurn):
         qCur = self.estimateQ(h, s, curTurn)
-        # positive state = p1, negative state = p2
-        # make it clearer
-        # print(curTurn)
-        # if s > 0:
         if curTurn % 2 == 1:  # PLayer 2's turn
             return max(qCur)
         else:
             return min(qCur)  # Player 1's turn
-        # elif s==0:
-        # print(type(qCur))
-        # return max(np.multiply(qCur, np.sign(s)))

@@ -5,16 +5,17 @@ from sparseSampling import sparseSampling
 
 
 class SLModel(object):
-	"""docstring for model"""
-	def __init__(self,discretizer):
-		super(SLModel, self).__init__()
-		self.d = discretizer
-		self.V = dict.fromkeys(self.d.statesActual,0)
+    """ SLModel"""
 
-	def getValue(self,state):
-		stateActual = self.d.nearest(state)
-		return self.V[stateActual]
+    def __init__(self, discretizer):
+        super(SLModel, self).__init__()
+        self.d = discretizer
+        self.V = dict.fromkeys(self.d.statesActual, 0)
 
-	def updateValues(self,data):
-		for state,value in data:
-			self.V[self.d.nearest(state)] = value
+    def getValue(self, state):
+        stateActual = self.d.nearest(state)
+        return self.V[stateActual]
+
+    def updateValues(self, data):
+        for state, value in data:
+            self.V[self.d.nearest(state)] = value

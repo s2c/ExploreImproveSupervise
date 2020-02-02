@@ -1,5 +1,6 @@
 import numpy as np
 from bisect import bisect_left
+import copy
 
 
 class valueIteration(object):
@@ -48,21 +49,29 @@ class valueIteration(object):
         else:
             return self.discretizer.nearest(curState)
 
-    def getSPrime(self, action, state):
-        sPrime = self.G.transition(action, state)  # get next state
+    def getSPrime(self, action, state,curPlayer):
+        sPrime = self.G.transition(action, state, curPlayer = curPlayer)  # get next state
         sPrime = self.nearestState(sPrime)  # get nearest next state
         return sPrime
 
     def nextIteration(self):
+        Vcopy = copy.deepcopy(self.V)
         for state in self.statesActual:  # for each state
             r = [0] * len(self.G.actions)
+            if state <= 0:
+                curPlayer = 1
+            else:
+                curplayer = 0
             for i, action in enumerate(self.G.actions):  # for each action
                 tot = 0
                 for c in range(0, self.C):  # get reward for each child from previous estimate
-                    tot += self.V[self.getSPrime(action, state)]  # add it to
+                    # add it to
+                    tot += self.V[self.getSPrime(action,
+                                                 state, curPlayer=curPlayer)]
                 r[i] = self.G.calcReward(
                     action, state) + self.gamma * (tot / self.C)
             if state > 0:  # 0 is considered player 2's state to get lowerbound
-                self.V[state] = max(r)
+                Vcopy[state] = max(r)
             else:
-                self.V[state] = min(r)
+                Vcopy[state] = min(r)
+        self.V = Vcopy
