@@ -49,13 +49,13 @@ class sparseSampling(object):
             self.C = np.ceil(one * (two + three))
             self.C = int(self.C)
 
-    def estimateQ(self, h, s, turn=1):  # start with player 0's turn
+    def estimateQ(self, h, s, turn=1):  # start with player 0's turn by default
         curTurn = turn
         S_a = {}  # Holds next states
         q_h = {}  # Holds Q values from current state
         if h == 0:  # End recursion
             if self.model is not None:
-                return model(s)
+                return [self.model.getValue(s)] * len(self.G.actions)
             else:
                 return [0.0] * len(self.G.actions)
         # Calculate next states
