@@ -20,7 +20,7 @@ class sparseSampling(object):
 
     """
 
-    def __init__(self, gamma, G, Rmax, epsilon, H=None, C=None):
+    def __init__(self, gamma, G, Rmax, epsilon, H=None, C=None, model = None):
         super(sparseSampling, self).__init__()
         self.epsilon = epsilon
         self.Rmax = Rmax
@@ -30,6 +30,8 @@ class sparseSampling(object):
         self.Qstar = {}
         self.ldba = (epsilon * ((1 - gamma)**2)) / 4
         self.Vmax = Rmax / (1 - gamma)
+        self.model = model
+        # self.turns = 1
         if H is not None:
             self.H = H
         else:
@@ -47,11 +49,12 @@ class sparseSampling(object):
             self.C = np.ceil(one * (two + three))
             self.C = int(self.C)
 
-    def estimateQ(self, h, s, model = None ):
+    def estimateQ(self, h, s, turn=1):  # start with player 0's turn
+        curTurn = turn
         S_a = {}  # Holds next states
         q_h = {}  # Holds Q values from current state
         if h == 0:  # End recursion
-            if model is not None:
+            if self.model is not None:
                 return model(s)
             else:
                 return [0.0] * len(self.G.actions)
@@ -69,7 +72,7 @@ class sparseSampling(object):
             # Go through all possible sampled next states for each action
             for s_prime in S_a[(s, a)]:  # get the next state
                 # Calculate according to the algorithm
-                tot += self.estimateV(h - 1, s_prime)
+                tot += self.estimateV(h - 1, s_prime, curTurn+1)
             r = self.G.calcReward(s, a) + (self.gamma / self.C) * tot
             q_h[(s, a)] = r  # Updated reward for state action pair
 
@@ -78,12 +81,20 @@ class sparseSampling(object):
         for i, a in enumerate(self.G.actions):
             qStar[i] = q_h[(s, a)]
 
-
+        # return qStar
         # return np.sign(s) * max(np.multiply(qStar, np.sign(s)))
         return qStar
-    def estimateV(self, h, s):
-        qCur = self.estimateQ(h, s)
+
+    def estimateV(self, h, s, curTurn):
+        qCur = self.estimateQ(h, s, curTurn)
         # positive state = p1, negative state = p2
-        return np.sign(s) * max(np.multiply(qCur, np.sign(s)))
+        # make it clearer
+        # print(curTurn)
+        # if s > 0:
+        if curTurn % 2==1:
+            return max(qCur)
+        else:
+            return min(qCur)
+        # elif s==0:
         # print(type(qCur))
         # return max(np.multiply(qCur, np.sign(s)))

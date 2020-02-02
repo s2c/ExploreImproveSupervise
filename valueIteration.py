@@ -31,7 +31,7 @@ class valueIteration(object):
 			print ("Something messed up")
 			return -4
 
-	def childMaxCalc(self,curState):
+	def childCalc(self,curState):
 		rewards = [0] * self.G.actions 
 		for i,action in enumerate(self.G.actions):
 			rewards[i] = self.G.calcReward(curState,action)
