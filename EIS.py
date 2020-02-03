@@ -17,6 +17,8 @@ class SLModel(object):
         return self.V[stateActual]
 
     def updateValues(self, data):
+
+        ### first implementation
         data = dict(data)  # Covert to dictionary for the O(1) lookup
         for state in self.V.keys():
             # find closest state in data
