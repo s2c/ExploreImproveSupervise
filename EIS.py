@@ -20,17 +20,20 @@ class SLModel(object):
 
         ### first implementation
         data = dict(data)  # Covert to dictionary for the O(1) lookup
+        sortedData = sorted(data.items()) # sort the data first
+        sortedData, _ = zip(*sortedData)
+       
         for state in self.V.keys():
             # find closest state in data
-            closest = self.__findClosest(state, data)
+            closest = self.__findClosest(state, sortedData)
             self.V[state] = data[closest]
         ### Alternate Implementation:
         # for state,value in data:
         # 	self.V[self.d.nearest(state)] = value
 
-    def __findClosest(self, point, dataStates):
-        sortedData = sorted(dataStates.items())
-        sortedData, _ = zip(*sortedData)
+    def __findClosest(self, point, sortedData):
+        #sortedData = sorted(dataStates.items())
+        #sortedData, _ = zip(*sortedData)
         pos = bisect_left(sortedData, point)
         if pos == 0:
             return sortedData[0]

@@ -54,10 +54,10 @@ class sparseSampling(object):
         S_a = {}  # Holds next states
         q_h = {}  # Holds Q values from current state
         if h == 0:  # End recursion
-            if self.model is not None:
-                return [self.model.getValue(s)] * len(self.G.actions)
-            else:
-                return [0.0] * len(self.G.actions)
+            #if self.model is not None:
+            #    return [self.model.getValue(s)] * len(self.G.actions)
+            #else:
+            return [0.0] * len(self.G.actions)
         # Calculate next states
         for a in self.G.actions:  # For each action
             for c in range(0, self.C):  # Generate c children
@@ -88,6 +88,6 @@ class sparseSampling(object):
     def estimateV(self, h, s, curTurn):
         qCur = self.estimateQ(h, s, curTurn)
         if curTurn % 2 == 1:  # PLayer 2's turn
-            return max(qCur)
+            return min(qCur)
         else:
-            return min(qCur)  # Player 1's turn
+            return max(qCur)  # Player 1's turn
