@@ -22,6 +22,9 @@ class SLModel(object):
             # find closest state in data
             closest = self.__findClosest(state, data)
             self.V[state] = data[closest]
+        ### Alternate Implementation:
+        # for state,value in data:
+        # 	self.V[self.d.nearest(state)] = value
 
     def __findClosest(self, point, dataStates):
         sortedData = sorted(dataStates.items())
