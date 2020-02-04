@@ -16,8 +16,11 @@ class valueIteration(object):
         if discretizer is not None:
             self.statesActual = discretizer.statesActual
         else:
-            self.statesActual = np.linspace(
-                stateRange[0], stateRange[1], numInterval + 1)
+            #self.statesActual = np.linspace(
+            #    stateRange[0], stateRange[1], numInterval + 1)
+            self.statesActual = np.array(list(np.linspace(-self.stateRange[1], -self.stateRange[0], self.numInterval+1))\
+                + list(np.linspace(self.stateRange[0],self.stateRange[1],self.numInterval+1)))
+
         self.discretizer = discretizer
         self.numInterval = numInterval
         self.gap = self.statesActual[1] - self.statesActual[0]
@@ -56,12 +59,16 @@ class valueIteration(object):
 
     def nextIteration(self):
         Vcopy = copy.deepcopy(self.V)
+        #curPlayer = 1
         for state in self.statesActual:  # for each state
             r = [0] * len(self.G.actions)
+            #print("curState=",state)
             if state <= 0:
-                curPlayer = 1
+                #print("P2")
+                curPlayer = 1  # Player 2
             else:
-                curplayer = 0
+                #print("P1")
+                curPlayer = 0  # Player 1
             for i, action in enumerate(self.G.actions):  # for each action
                 tot = 0
                 for c in range(0, self.C):  # get reward for each child from previous estimate

@@ -12,7 +12,7 @@ class EISGame(object):
     t: near 0 constant so to avoid 0+,0- errors
     """
 
-    def __init__(self, t=0, numActions=5, stateWidth=1, gamma=0.9, simultaneous=False):
+    def __init__(self, t=0.1, numActions=5, stateWidth=1, gamma=0.9, simultaneous=False):
         super(EISGame, self).__init__()
         # Actual Environment starts here
         self.t = t
@@ -26,7 +26,7 @@ class EISGame(object):
         else:
             self.curPlayer = 0
 
-        self.p1States = [t - stateWidth, t]  # PLayer 2
+        self.p1States = [-t - stateWidth, -t]  # PLayer 2
         self.States = [self.p0States, self.p1States]
         self.actions = [0.1 * i for i in range(1, numActions + 1)]
         self.simultaneous = simultaneous
@@ -65,7 +65,7 @@ class EISGame(object):
             state = self.curState
         # if state == self.t or state == -self.t:  # t is 0
             # return - action
-        return abs(state) - action
+        return np.sin(2*abs(state)) - action
 
     def status(self):
         print("Current game status: ")

@@ -13,11 +13,15 @@ class discretizer(object):
 
     def discretize(self, stateRange=None):
         if stateRange is None:
-            self.statesActual = np.linspace(
-                self.stateRange[0], self.stateRange[1], self.numInterval + 1)
+            #self.statesActual = np.linspace(
+            #    self.stateRange[0], self.stateRange[1], self.numInterval + 1)
+            self.statesActual = np.array(list(np.linspace(-self.stateRange[1], -self.stateRange[0], self.numInterval+1))\
+                + list(np.linspace(self.stateRange[0],self.stateRange[1],self.numInterval+1)))
         else:
-            self.statesActual = np.linspace(
-                stateRange[0], stateRange[1], self.numInterval + 1)
+            #self.statesActual = np.linspace(
+            #    stateRange[0], stateRange[1], self.numInterval + 1)
+            self.statesActual = np.array(list(np.linspace(-self.stateRange[1], -self.stateRange[0], self.numInterval+1))\
+                + list(np.linspace(self.stateRange[0],self.stateRange[1],self.numInterval+1)))
         return self.statesActual
 
     def nearest(self, curState):
